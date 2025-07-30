@@ -5,4 +5,4 @@ app = FastAPI()
 
 @app.get("/")
 async def f1():
-    return {"user_id": "the cujfjcrrent user"}
+    return {"user_id": "the user"}
