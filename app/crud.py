@@ -5,6 +5,7 @@ from typing import Optional
 import random
 app = FastAPI()
 my_posts=[{"title":"khanak","discription":"idiot","id":1},{"title":"pankaj","dicription":"retila","id":2}]
+# hi its me
 def find_post(id):
     for p in my_posts:
         if p['id']== id:
