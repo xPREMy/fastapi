@@ -13,6 +13,7 @@ engine=AsyncEngine(
 async def init_db() -> None :
     async with engine.begin() as conn:
         from src.books.models import Book
+        from src.auth.models import User
         await conn.run_sync(SQLModel.metadata.create_all)
 
 async def get_session():

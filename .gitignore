@@ -4,3 +4,6 @@ __pycache__/
 .env
 myenv/
 myenv
+src/__pycache__
+src/books/__pycache__
+src/db/__pycache__
