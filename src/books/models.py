@@ -9,18 +9,18 @@ class Book(SQLModel,table=True):
             pg.UUID,
             nullable=False,
             primary_key=True,
-            default=uuid.uuid4()
+            default=uuid.uuid4
         )
     )
     name : str
     created_at : datetime = Field(
-        Column(
+        sa_column=Column(
             pg.TIMESTAMP,
             default=datetime.now
         )
     )
     updated_at : datetime = Field(
-        Column(
+        sa_column= Column(
             pg.TIMESTAMP,
             default=datetime.now
         )
