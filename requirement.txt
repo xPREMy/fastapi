@@ -3,3 +3,5 @@ uvicorn
 sqlmodel
 asyncpg
 pydantic-settings
+alembic
+sqlalchemy
