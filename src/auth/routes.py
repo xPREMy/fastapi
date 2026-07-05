@@ -1,0 +1,30 @@
+from fastapi import APIRouter, HTTPException , Depends ,status , Query
+from typing import Optional
+from .schemas import Usercreatemodel , UserModel
+from src.db.main import get_session
+from .service import Userservice
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+auth_routes=APIRouter()
+User_service=Userservice()
+
+@auth_routes.post("/signup",response_model=UserModel,status_code=status.HTTP_201_CREATED)
+async def create_user_Account(userdata: Usercreatemodel , session : AsyncSession = Depends(get_session)):
+    email=userdata.email
+    user_existance = await User_service.user_exist(email,session)
+    if user_existance is False :
+        return await User_service.create_user(userdata,session)
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="user email already exists")
+
+@auth_routes.get("/email/{email}",response_model=UserModel,status_code=status.HTTP_200_OK)
+async def get_user(email:str , session : AsyncSession = Depends(get_session)):
+    User_by_email=await User_service.get_user_by_email(email,session)
+    if User_by_email is None :
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="user with email does not exist")
+    return User_by_email
+
+@auth_routes.delete("/delete_account",response_model=UserModel,status_code=status.HTTP_200_OK)
+async def delete_acc(email : Optional[str] = Query(None) , username : Optional[str] = Query(None), session : AsyncSession = Depends(get_session)):
+    if email is None and username is None :
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="please either provide email or username")
+    
