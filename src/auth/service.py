@@ -17,10 +17,14 @@ class Userservice:
         user= result.first()
         return user
 
-    async def user_exist(self,email: str , session : AsyncSession):
+    async def user_exist_by_email(self,email: str , session : AsyncSession):
         user=await self.get_user_by_email(email,session)
         return True if user is not None else False      
     
+    async def user_exist_by_username(self,username: str , session : AsyncSession):
+        user=await self.get_user_by_username(username,session)
+        return True if user is not None else False
+
     async def create_user(self,userdata: Usercreatemodel, session: AsyncSession):
         user_data_dict=userdata.model_dump()
         new_user= User(

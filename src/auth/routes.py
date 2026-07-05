@@ -11,10 +11,14 @@ User_service=Userservice()
 @auth_routes.post("/signup",response_model=UserModel,status_code=status.HTTP_201_CREATED)
 async def create_user_Account(userdata: Usercreatemodel , session : AsyncSession = Depends(get_session)):
     email=userdata.email
-    user_existance = await User_service.user_exist(email,session)
-    if user_existance is False :
-        return await User_service.create_user(userdata,session)
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="user email already exists")
+    username=userdata.username
+    user_existance = await User_service.user_exist_by_email(email,session)
+    if user_existance is True:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="user email already exists")
+    user_existance = await User_service.user_exist_by_username(username,session)
+    if user_existance is True:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="user username already exists")
+    return await User_service.create_user(userdata,session)
 
 @auth_routes.get("/email/{email}",response_model=UserModel,status_code=status.HTTP_200_OK)
 async def get_user(email:str , session : AsyncSession = Depends(get_session)):
@@ -25,6 +29,32 @@ async def get_user(email:str , session : AsyncSession = Depends(get_session)):
 
 @auth_routes.delete("/delete_account",response_model=UserModel,status_code=status.HTTP_200_OK)
 async def delete_acc(email : Optional[str] = Query(None) , username : Optional[str] = Query(None), session : AsyncSession = Depends(get_session)):
+
     if email is None and username is None :
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="please either provide email or username")
     
+    if email is not None and username is not None:
+        user = await User_service.get_user_by_email(email,session)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user with email does not exist.")
+        
+        if user.username != username:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username does not match the provided email.")
+        
+        await session.delete(user)
+        await session.commit()
+        return user
+    
+    if email is not None :
+        deleted_user= await User_service.delete_user_by_email(email,session)
+        if deleted_user is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user with email does not exist")
+        return deleted_user
+    
+    if username is not None :
+        deleted_user= await User_service.delete_user_by_username(username,session)
+        if deleted_user is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user with username does not exist")
+        return deleted_user
+
+        
