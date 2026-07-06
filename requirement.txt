@@ -6,3 +6,4 @@ pydantic-settings
 alembic
 sqlalchemy
 passlib
+pyjwt

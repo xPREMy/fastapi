@@ -5,6 +5,11 @@ from sqlmodel import select ,desc
 from .utils import generate_passwd_hash
 
 class Userservice:
+    async def get_all_accounts_usernames(self,session : AsyncSession):
+        statement= select(User.username).order_by(desc(User.created_at))
+        result = await session.exec(statement=statement)
+        return result.all()
+    
     async def get_user_by_email(self,email: str , session : AsyncSession):
         statement = select(User).where(User.email==email)
         result= await session.exec(statement=statement)

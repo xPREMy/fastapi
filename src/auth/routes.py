@@ -7,6 +7,9 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 auth_routes=APIRouter()
 User_service=Userservice()
+@auth_routes.get("/serverside",response_model=list[str],status_code=status.HTTP_200_OK)
+async def get_all_acc(session:AsyncSession = Depends(get_session)):
+    return await User_service.get_all_accounts_usernames(session)
 
 @auth_routes.post("/signup",response_model=UserModel,status_code=status.HTTP_201_CREATED)
 async def create_user_Account(userdata: Usercreatemodel , session : AsyncSession = Depends(get_session)):

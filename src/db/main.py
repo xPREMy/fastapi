@@ -1,14 +1,12 @@
 from sqlmodel import  create_engine ,text , SQLModel
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine
 from src.books.config import settings
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-engine=AsyncEngine(
-    create_engine(
-        url=settings.DATABASE_URL,
-        echo=True
-    )
+engine = create_async_engine(
+    url=settings.DATABASE_URL,
+    echo=True
 )
 async def init_db() -> None :
     """Database initialization - schema is managed by Alembic migrations."""
