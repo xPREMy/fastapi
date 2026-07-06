@@ -98,7 +98,7 @@ async def login_user(userdata : User_login_model, session : AsyncSession = Depen
                 }
             )
     
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="INvalid Password And Email")
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Invalid Password And Email")
 
 
 

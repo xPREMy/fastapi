@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from datetime import datetime , timedelta
 import jwt
-from src.books.config import settings
+from src.config import settings
 import uuid
 import  logging
 

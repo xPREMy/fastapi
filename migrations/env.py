@@ -10,7 +10,7 @@ from src.auth.models import User
 from src.books.models import Book
 
 from sqlmodel import SQLModel
-from src.books.config import settings
+from src.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
