@@ -15,4 +15,7 @@ class Usercreatemodel(BaseModel):
     username : str= Field(max_length=10)
     email : str
     password : str = Field(min_length=8)
-    
+
+class User_login_model(BaseModel):
+    email : str
+    password : str = Field(min_length=8)

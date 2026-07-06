@@ -1,12 +1,18 @@
 from fastapi import APIRouter, HTTPException , Depends ,status , Query
+from fastapi.responses import JSONResponse
 from typing import Optional
-from .schemas import Usercreatemodel , UserModel
+from .schemas import Usercreatemodel , UserModel , User_login_model
 from src.db.main import get_session
 from .service import Userservice
 from sqlmodel.ext.asyncio.session import AsyncSession
+from .utils import create_access_token , decode_token , verify_password
+from datetime import timedelta
 
 auth_routes=APIRouter()
 User_service=Userservice()
+
+REFRESH_TOKEN_EXPIRY=2
+
 @auth_routes.get("/serverside",response_model=list[str],status_code=status.HTTP_200_OK)
 async def get_all_acc(session:AsyncSession = Depends(get_session)):
     return await User_service.get_all_accounts_usernames(session)
@@ -59,5 +65,41 @@ async def delete_acc(email : Optional[str] = Query(None) , username : Optional[s
         if deleted_user is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user with username does not exist")
         return deleted_user
+    
+@auth_routes.post('/login')
+async def login_user(userdata : User_login_model, session : AsyncSession = Depends(get_session)):
+    email = userdata.email
+    password= userdata.password
+    user= await User_service.get_user_by_email(email,session)
+    if user :
+        password_hash=user.Password_hash
+        password_valid=verify_password(password=password,hash=password_hash)
+        if password_valid :
+            userdata={}
+            userdata['email']=user.email
+            userdata['uid']=str(user.uid)
+
+            access_token = create_access_token(
+                userdata=userdata
+            )
+
+            refresh_token = create_access_token(
+                userdata=userdata,
+                refresh=True,
+                expiry=timedelta(days=REFRESH_TOKEN_EXPIRY)
+            )
+
+            return JSONResponse(
+                content={
+                    "message": "LOGGED IN SUCCESSFULLY",
+                    "ACCESS_TOKEN" : access_token,
+                    "REFRESH_TOKEN" : refresh_token,
+                    'userdata' : userdata
+                }
+            )
+    
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="INvalid Password And Email")
+
+
 
         
