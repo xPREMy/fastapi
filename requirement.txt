@@ -7,3 +7,4 @@ alembic
 sqlalchemy
 passlib
 pyjwt
+redis
