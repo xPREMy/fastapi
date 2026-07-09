@@ -15,6 +15,11 @@ class User(SQLModel, table=True):
     )
     username: str
     email : str
+    role : str = Field(sa_column=Column(
+        pg.VARCHAR,
+        nullable=False,
+        server_default="user"
+    ))
     is_verified : bool = Field(sa_column= Column(
         pg.BOOLEAN,
         default=False

@@ -7,7 +7,7 @@ from .service import Userservice
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .utils import create_access_token , decode_token , verify_password
 from datetime import timedelta , datetime
-from .dependancies import RefreshTokenBearer , AccessTokenBearer
+from .dependancies import RefreshTokenBearer , AccessTokenBearer , get_current_user
 from src.db.redis_config import add_JTI_to_Blocklist
 
 auth_routes=APIRouter()
@@ -115,6 +115,9 @@ async def get_new_access_token(token_details : dict = Depends(RefreshTokenBearer
         )
     
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="token expired")
+@auth_routes.get("/me")
+async def get_about_info(user = Depends(get_current_user)):
+    return user
 
 @auth_routes.get("/logout")
 async def revoke_token(token_details : dict = Depends(AccessTokenBearer())):
