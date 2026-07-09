@@ -51,7 +51,7 @@ class RefreshTokenBearer(TokenBearer):
             ) 
         return token_data
     
-async def get_current_user(token_details = Depends(AccessTokenBearer) , session : AsyncSession = Depends(get_session)):
+async def get_current_user(token_details : dict = Depends(AccessTokenBearer()) , session : AsyncSession = Depends(get_session)):
     user_email = token_details['user']['email']
-    user = user_service.get_user_by_email(user_email,session)
-    return user
+    user = await user_service.get_user_by_email(user_email,session)
+    return user 
