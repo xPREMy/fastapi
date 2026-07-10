@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException , Depends ,status , Query
 from fastapi.responses import JSONResponse
-from typing import Optional
+from typing import Optional , List
 from .schemas import Usercreatemodel , UserModel , User_login_model
 from src.db.main import get_session
 from .service import Userservice
@@ -81,7 +81,7 @@ async def login_user(userdata : User_login_model, session : AsyncSession = Depen
             userdata={}
             userdata['email']=user.email
             userdata['uid']=str(user.uid)
-
+            userdata['role']=user.role
             access_token = create_access_token(
                 userdata=userdata
             )

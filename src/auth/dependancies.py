@@ -9,6 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.main import get_session
 from .service import Userservice
 user_service= Userservice()
+from typing import List
 
 class TokenBearer(HTTPBearer):
     
@@ -55,3 +56,7 @@ async def get_current_user(token_details : dict = Depends(AccessTokenBearer()) ,
     user_email = token_details['user']['email']
     user = await user_service.get_user_by_email(user_email,session)
     return user 
+
+class RoleChecker:
+    def __init__(self):
+        
