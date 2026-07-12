@@ -7,16 +7,17 @@ from .service import Userservice
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .utils import create_access_token , decode_token , verify_password
 from datetime import timedelta , datetime
-from .dependancies import RefreshTokenBearer , AccessTokenBearer , get_current_user
+from .dependancies import RefreshTokenBearer , AccessTokenBearer , get_current_user , RoleChecker
 from src.db.redis_config import add_JTI_to_Blocklist
 from .models import User
 
 auth_routes=APIRouter()
 User_service=Userservice()
+role_checker = Depends(RoleChecker(["admin"]))
 
 REFRESH_TOKEN_EXPIRY=2
 
-@auth_routes.get("/serverside",response_model=list[str],status_code=status.HTTP_200_OK)
+@auth_routes.get("/serverside",response_model=list[str],status_code=status.HTTP_200_OK,dependencies=[role_checker])
 async def get_all_acc(session:AsyncSession = Depends(get_session)):
     return await User_service.get_all_accounts_usernames(session)
 
@@ -39,7 +40,7 @@ async def get_user(email:str , session : AsyncSession = Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="user with email does not exist")
     return User_by_email
 
-@auth_routes.delete("/delete_account",response_model=UserModel,status_code=status.HTTP_200_OK)
+@auth_routes.delete("/delete_account",response_model=UserModel,status_code=status.HTTP_200_OK,dependencies=[role_checker])
 async def delete_acc(email : Optional[str] = Query(None) , username : Optional[str] = Query(None), session : AsyncSession = Depends(get_session)):
 
     if email is None and username is None :
