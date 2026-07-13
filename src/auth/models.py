@@ -1,7 +1,10 @@
-from sqlmodel import SQLModel , Field, Column
+from sqlmodel import SQLModel , Field, Column ,Relationship
 import uuid
 from datetime import datetime
 import sqlalchemy.dialects.postgresql as pg
+from typing import Optional , TYPE_CHECKING ,List
+if TYPE_CHECKING:
+    from src.books.models import Book
 
 class User(SQLModel, table=True):
     __tablename__="Users"
@@ -39,6 +42,7 @@ class User(SQLModel, table=True):
             default= datetime.now
         )
     )
-    
+    books : List["Book"] = Relationship(back_populates="user", sa_relationship_kwargs={"lazy":"selectin"})
+
     def __repr__(self):
         return f"<USER {self.username}>"

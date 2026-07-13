@@ -81,7 +81,7 @@ async def login_user(userdata : User_login_model, session : AsyncSession = Depen
         if password_valid :
             userdata={}
             userdata['email']=user.email
-            userdata['uid']=str(user.uid)
+            userdata['user_uid']=str(user.uid)
             userdata['role']=user.role
             access_token = create_access_token(
                 userdata=userdata
@@ -117,7 +117,7 @@ async def get_new_access_token(token_details : dict = Depends(RefreshTokenBearer
         )
     
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="token expired")
-@auth_routes.get("/me")
+@auth_routes.get("/me",response_model=UserModel)
 async def get_about_info(user :User= Depends(get_current_user)):
     return user
 
