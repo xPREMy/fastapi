@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException , Depends ,status , Query
 from fastapi.responses import JSONResponse
 from typing import Optional , List
-from .schemas import Usercreatemodel , UserModel , User_login_model
+from .schemas import Usercreatemodel , UserModel , User_login_model ,UserBooksModel
 from src.db.main import get_session
 from .service import Userservice
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -117,7 +117,7 @@ async def get_new_access_token(token_details : dict = Depends(RefreshTokenBearer
         )
     
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="token expired")
-@auth_routes.get("/me",response_model=UserModel)
+@auth_routes.get("/me",response_model=UserBooksModel)
 async def get_about_info(user :User= Depends(get_current_user)):
     return user
 

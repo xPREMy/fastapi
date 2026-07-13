@@ -12,6 +12,8 @@ class UserModel(BaseModel):
     Password_hash : str 
     created_at : datetime 
     updated_at : datetime 
+
+class UserBooksModel(UserModel):
     books : List[book]
     
 class Usercreatemodel(BaseModel):
