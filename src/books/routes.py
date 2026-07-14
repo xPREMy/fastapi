@@ -4,7 +4,7 @@ from fastapi import HTTPException ,status, Depends
 from .schemas import book, bookupdate , bookcreateModel
 from fastapi import APIRouter
 from src.db.main import get_session
-from .models import Book
+from src.db.models import Book
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import BookService
 from src.auth.dependancies import AccessTokenBearer

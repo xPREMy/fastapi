@@ -9,7 +9,7 @@ from .utils import create_access_token , decode_token , verify_password
 from datetime import timedelta , datetime
 from .dependancies import RefreshTokenBearer , AccessTokenBearer , get_current_user , RoleChecker
 from src.db.redis_config import add_JTI_to_Blocklist
-from .models import User
+from src.db.models import User
 
 auth_routes=APIRouter()
 User_service=Userservice()
