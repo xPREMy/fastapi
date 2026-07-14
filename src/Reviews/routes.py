@@ -11,4 +11,4 @@ Review_route = APIRouter()
 
 @Review_route.post("/book/{book_uid}")
 async def add_review(book_uid:str,rev : ReviewCreateModel,user : User = Depends(get_current_user),session : AsyncSession = Depends(get_session)):
-    return await review_service.add_review_to_book(user,book_uid,rev)
+    return await review_service.add_review_to_book(user,book_uid,rev,session)

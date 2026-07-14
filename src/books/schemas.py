@@ -12,7 +12,7 @@ class book(BaseModel):
     updated_at : datetime
 
 class book_review(book):
-    reviews = List[ReviewBaseModel]
+    review : List[ReviewBaseModel]
 
 class bookupdate(BaseModel):
     name: str

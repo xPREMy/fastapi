@@ -23,6 +23,9 @@ class ReviewService:
             new_review.book_id=book_uid
             new_review.user=user
             new_review.book=book
+            session.add(new_review)
+            await session.commit()
+            await session.refresh(new_review)
             return new_review
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Oops... something went wrong")

@@ -1,7 +1,7 @@
 from fastapi import FastAPI ,Query
 from pydantic import BaseModel
 from fastapi import HTTPException ,status, Depends
-from .schemas import book, bookupdate , bookcreateModel
+from .schemas import book, bookupdate , bookcreateModel ,book_review
 from fastapi import APIRouter
 from src.db.main import get_session
 from src.db.models import Book
@@ -23,7 +23,7 @@ async def get_user_books(session : AsyncSession = Depends(get_session), token_de
     books=await book_service.get_all_user_books(token_details.get('user')["user_uid"],session)
     return books
 
-@book_router.get("/{bookid}",status_code=200)
+@book_router.get("/{bookid}",status_code=200,response_model=book_review)
 async def get_book(bookid:str,session : AsyncSession =Depends(get_session), token_details : dict= Depends(access_token_bearer)):
     g_book=await book_service.get_book(book_uid=bookid,session=session)
     if g_book:
