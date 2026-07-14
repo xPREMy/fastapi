@@ -28,7 +28,7 @@ class BookService:
             **book_data_dict
             )
         new_book.user_id=user_uid
-        session.add(new_book)
+        await session.add(new_book)
         await session.commit()
         await session.refresh(new_book)
         return new_book
