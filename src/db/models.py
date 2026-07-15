@@ -105,3 +105,22 @@ class Review(SQLModel,table=True):
     book : Optional["Book"] = Relationship(back_populates="review")
     def __repr__(self):
         return f"<Review on Book {self.book_id} by user {self.user_id}>"
+    
+class tag(SQLModel, table=True):
+    __tablename__ ="Tag"
+    uid : uuid.UUID = Field(
+        sa_column=Column(
+            pg.UUID,
+            nullable=False,
+            default=uuid.uuid4,
+            primary_key=True
+        )
+    )
+    tag_name : str = Field(sa_column=Column(
+        pg.VARCHAR , nullable= False
+    ))
+    created_at : datetime =Field(sa_column=Column(
+        pg.TIMESTAMP,default=datetime.now
+    ))
+    book_uid : uuid.UUID = Field(default=None,foreign_key="books")
+
