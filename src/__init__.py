@@ -3,7 +3,7 @@ from src.books.routes import book_router
 from contextlib import asynccontextmanager
 from src.db.main import init_db
 from src.auth.routes import auth_routes
-from src.Reviews.routes import Review_route
+from src.review.routes import Review_route
 
 @asynccontextmanager
 async def life_span(app:FastAPI):

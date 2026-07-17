@@ -106,6 +106,10 @@ class Review(SQLModel,table=True):
     def __repr__(self):
         return f"<Review on Book {self.book_id} by user {self.user_id}>"
     
+class Booktag(SQLModel,table=True):
+    book_uid : uuid.UUID = Field(default=None, foreign_key="books.uid",primary_key=True)
+    tag_uid : uuid.UUID = Field(default=None, foreign_key="Tag.uid",primary_key=True)
+
 class tag(SQLModel, table=True):
     __tablename__ ="Tag"
     uid : uuid.UUID = Field(
@@ -122,5 +126,11 @@ class tag(SQLModel, table=True):
     created_at : datetime =Field(sa_column=Column(
         pg.TIMESTAMP,default=datetime.now
     ))
-    book_uid : uuid.UUID = Field(default=None,foreign_key="books")
+    books : List["Book"] = Relationship(
+        link_model=Booktag,
+        back_populates="tags",
+        sa_relationship={"lazy" : "selectin"}
+    )
 
+    def __repr__(self):
+        return f"TAG {self.tag_name}"
