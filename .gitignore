@@ -8,5 +8,6 @@ src/__pycache__
 src/books/__pycache__
 src/db/__pycache__
 src/Reviews/__pycache__
+src/tag/__pycache__
 migrations/__pycache__
 migrations/versions/__pycache__

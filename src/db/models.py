@@ -4,34 +4,7 @@ from datetime import datetime
 import sqlalchemy.dialects.postgresql as pg
 from typing import Optional , TYPE_CHECKING ,List
 
-class Book(SQLModel,table=True):
-    __tablename__ = "books"
-    uid : uuid.UUID = Field(
-        sa_column=Column(
-            pg.UUID,
-            nullable=False,
-            primary_key=True,
-            default=uuid.uuid4
-        )
-    )
-    name : str
-    user_id : Optional[uuid.UUID] = Field( default=None , foreign_key="Users.uid")
-    created_at : datetime = Field(
-        sa_column=Column(
-            pg.TIMESTAMP,
-            default=datetime.now
-        )
-    )
-    updated_at : datetime = Field(
-        sa_column= Column(
-            pg.TIMESTAMP,
-            default=datetime.now
-        )
-    )
-    user : Optional["User"] = Relationship(back_populates="books")
-    review : List["Review"] = Relationship(back_populates="book",sa_relationship_kwargs={"lazy":"selectin"})
-    def __repr__(self):
-        return f"<BOOk {self.name}>"
+
 
 class User(SQLModel, table=True):
     __tablename__="Users"
@@ -110,7 +83,7 @@ class Booktag(SQLModel,table=True):
     book_uid : uuid.UUID = Field(default=None, foreign_key="books.uid",primary_key=True)
     tag_uid : uuid.UUID = Field(default=None, foreign_key="Tag.uid",primary_key=True)
 
-class tag(SQLModel, table=True):
+class Tag(SQLModel, table=True):
     __tablename__ ="Tag"
     uid : uuid.UUID = Field(
         sa_column=Column(
@@ -129,8 +102,42 @@ class tag(SQLModel, table=True):
     books : List["Book"] = Relationship(
         link_model=Booktag,
         back_populates="tags",
-        sa_relationship={"lazy" : "selectin"}
+        sa_relationship_kwargs={"lazy" : "selectin"}
     )
 
     def __repr__(self):
         return f"TAG {self.tag_name}"
+    
+class Book(SQLModel,table=True):
+    __tablename__ = "books"
+    uid : uuid.UUID = Field(
+        sa_column=Column(
+            pg.UUID,
+            nullable=False,
+            primary_key=True,
+            default=uuid.uuid4
+        )
+    )
+    name : str
+    user_id : Optional[uuid.UUID] = Field( default=None , foreign_key="Users.uid")
+    created_at : datetime = Field(
+        sa_column=Column(
+            pg.TIMESTAMP,
+            default=datetime.now
+        )
+    )
+    updated_at : datetime = Field(
+        sa_column= Column(
+            pg.TIMESTAMP,
+            default=datetime.now
+        )
+    )
+    user : Optional["User"] = Relationship(back_populates="books")
+    tags : List["Tag"] = Relationship(
+        link_model=Booktag,
+        back_populates="books",
+        sa_relationship_kwargs={"lazy" : "selectin"}
+    )
+    review : List["Review"] = Relationship(back_populates="book",sa_relationship_kwargs={"lazy":"selectin"})
+    def __repr__(self):
+        return f"<BOOk {self.name}>"
