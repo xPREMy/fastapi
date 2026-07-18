@@ -1,6 +1,6 @@
 from fastapi import FastAPI ,Query
 from pydantic import BaseModel
-from fastapi import HTTPException ,status, Depends
+from fastapi import status, Depends
 from .schemas import book, bookupdate , bookcreateModel ,book_review
 from fastapi import APIRouter
 from src.db.main import get_session
@@ -8,6 +8,7 @@ from src.db.models import Book
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import BookService
 from src.auth.dependancies import AccessTokenBearer
+from src.errors import *
 
 book_router=APIRouter()
 book_service=BookService()
@@ -29,8 +30,7 @@ async def get_book(bookid:str,session : AsyncSession =Depends(get_session), toke
     if g_book:
         return g_book
     else :
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="NOT FOUND")
-
+        raise BookNotFound()
 @book_router.post("/add_book",status_code=201)
 async def add_book(book_data: bookcreateModel,session : AsyncSession = Depends(get_session),token_details : dict= Depends(access_token_bearer)):
     user_uid=token_details.get('user')['user_uid']
@@ -43,7 +43,7 @@ async def updatebook(book_uid:str, book_up :bookupdate,session : AsyncSession =D
     if updated_book:
         return updated_book
     else :
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="NOT FOUND")  
+        raise BookNotFound()
     
 @book_router.delete("/delete_book/{bookid}", status_code=200)
 async def delete_book(bookid: str,session : AsyncSession =Depends(get_session) , token_details : dict= Depends(access_token_bearer)):
@@ -51,4 +51,4 @@ async def delete_book(bookid: str,session : AsyncSession =Depends(get_session) ,
     if deleted_book:
         return deleted_book
     else :
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="NOT FOUND") 
+        raise BookNotFound()

@@ -4,7 +4,7 @@ from src.db.models import Review ,User
 from .schemas import ReviewBaseModel , ReviewEditModel , ReviewCreateModel
 from src.auth.service import Userservice
 from src.books.service import BookService
-from fastapi import HTTPException ,status
+from src.errors import BookNotFound, BookException
 
 user_service = Userservice()
 book_service = BookService()
@@ -14,7 +14,7 @@ class ReviewService:
         try:
             book=await book_service.get_book(book_uid=book_uid,session=session)
             if book is None:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book Not Found!")
+                raise BookNotFound()
             rev_dict = rev.model_dump()
             new_review = Review(
                 **rev_dict
@@ -27,7 +27,9 @@ class ReviewService:
             await session.commit()
             await session.refresh(new_review)
             return new_review
+        except BookException:
+            raise
         except Exception as e:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Oops... something went wrong")
+            raise BookException(f"Oops... something went wrong: {e}")
         
     
