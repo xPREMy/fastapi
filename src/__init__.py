@@ -6,13 +6,7 @@ from src.auth.routes import auth_routes
 from src.review.routes import Review_route
 from src.tags.routes import tag_route
 from .errors import *
-
-@asynccontextmanager
-async def life_span(app:FastAPI):
-    print("server is starting")
-    await init_db()
-    yield
-    print("server is stopped")
+from .middleware import register_middleware
 
 app=FastAPI(
     title="books",
@@ -20,6 +14,7 @@ app=FastAPI(
 )
 version="v1"
 register_all_errors(app)
+register_middleware(app)
 
 app.include_router(book_router,prefix=f"/books/{version}",tags=['books'])
 app.include_router(auth_routes,prefix=f"/users/{version}",tags=['users'])

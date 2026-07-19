@@ -5,8 +5,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 engine = create_async_engine(
-    url=settings.DATABASE_URL,
-    echo=True
+    url=settings.DATABASE_URL
 )
 async def init_db() -> None :
     """Database initialization - schema is managed by Alembic migrations."""
